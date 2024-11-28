@@ -25,8 +25,8 @@ default_args = {
 dag = DAG(
     'my-first-dag',
     default_args=default_args,
-    description='My first DAG',
-    schedule_interval=timedelta(hours=3),
+    description='ETL server access',
+    schedule_interval=timedelta(hours=1),
 )
 
 # define the tasks

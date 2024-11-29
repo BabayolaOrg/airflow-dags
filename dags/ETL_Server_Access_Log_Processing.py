@@ -38,21 +38,21 @@ dag=dag,
 
 extract = BashOperator(
     task_id='extract',
-    bash_command='cut -f1,4 -d"#" web-server-access-log.txt > extracted.txt',
+    bash_command='cut -f1,4 -d"#" web-server-access-log.txt > /usr/local/airflow/dags/extracted.txt',
     dag=dag,
 )
 
 # define the third task
 transform = BashOperator(
     task_id='transform',
-    bash_command='tr "[a-z]" "[A-Z]" < extracted.txt > capitalized.txt',
+    bash_command='tr "[a-z]" "[A-Z]" < /usr/local/airflow/dags/extracted.txt > /usr/local/airflow/dags/capitalized.txt',
     dag=dag,
 )
 
 # define the fourth task
 load = BashOperator(
     task_id='load',
-    bash_command='zip log.zip capitalized.txt' ,
+    bash_command='zip /usr/local/airflow/dags/log.zip /usr/local/airflow/dags/capitalized.txt',
     dag=dag,
 )
 

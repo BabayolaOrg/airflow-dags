@@ -38,9 +38,10 @@ dag=dag,
 
 extract = BashOperator(
     task_id='extract',
-    bash_command='cut -f1,4 -d"#" web-server-access-log.txt > /usr/local/airflow/dags/extracted.txt',
+    bash_command='cut -d"#" -f1,4 /usr/local/airflow/dags/web-server-access-log.txt > /usr/local/airflow/dags/extracted.txt',
     dag=dag,
 )
+
 
 # define the third task
 transform = BashOperator(

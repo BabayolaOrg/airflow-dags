@@ -31,21 +31,21 @@ dag = DAG(
 
 # define the tasks
 # Define the first task
-download = BashOperator( task_id = 'download', bash_command = 'curl = "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Apache%20Airflow/Build%20a%20DAG%20using%20Airflow/web-server-access-log.txt" -o web-server-access-log.txt', 
+download = BashOperator( task_id = 'download', bash_command = 'curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Apache%20Airflow/Build%20a%20DAG%20using%20Airflow/web-server-access-log.txt" -o web-server-access-log.txt', 
 dag=dag,
 )                      
 # define the second task
 
 extract = BashOperator(
     task_id='extract',
-    bash_command='cut -f1,4 -d"#" web-server-access-log.txt > /Babayola/airflow-dags/dags/extracted.txt',
+    bash_command='cut -f1,4 -d"#" web-server-access-log.txt > extracted.txt',
     dag=dag,
 )
 
 # define the third task
 transform = BashOperator(
     task_id='transform',
-    bash_command='tr "[a-z]" "[A-Z]" < /Babayola/airflow-dags/dags/extracted.txt > /Babayola/airflow-dags/dags/capitalized.txt',
+    bash_command='tr "[a-z]" "[A-Z]" < extracted.txt > capitalized.txt',
     dag=dag,
 )
 

@@ -37,9 +37,19 @@ download = BashOperator (task_id = 'download',
 unzip = BashOperator(task_id='unzip_data',
     bash_command = 'tar -xzf Babayola/airflow-dags/dags/finalassignment/tolldata.tgz > /Babayola/airflow-dags/dags/finalassignment/txt_data.txt,
 )
-# Defining extract task
-extract = BashOperator (task_id = 'extract_data_from_csv',
+# Defining csv data extract task
+extract1 = BashOperator (task_id = 'extract_data_from_csv',
     bash_command = 'cut -d',' -f1-4 /Babayola/airflow-dags/dags/finalassignment/txt_data.txt > 
                                     /Babayola/airflow-dags/dags/finalassignment/csv_data.csv,
-                       )
+)
+# defining tsv data extract task
+extract2 = (task_id = 'extract_data_from_tsv',
+bash_command = cut -d',' -f2,4-5 /Babayola/airflow-dags/dags/finalassignment/payment-data.txt >
+                                 /Babayola/airflow-dags/dags/finalassignment/tsv_data.csv, 
+)
+
+
+
+
+
 download >> unzip >> extract

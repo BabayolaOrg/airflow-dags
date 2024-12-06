@@ -11,7 +11,7 @@ default_args = {
     'start_date': days_ago(0),
     'email': ['bayolaismaila@gmail.com'],
     'retries': 1,
-    'retry_delay': timedelta(minutes=5),
+    'retry_delay': timedelta(minutes=2),
     'email on failure':true,
     'email_on_retry' true,
 }
@@ -27,15 +27,16 @@ dag = DAG(
 # Defining the tasks
 # Defining download task
 download = BashOperator (task_id = 'download',
-    Bash_command = 'curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" ' 
-    '-o /Babayola/airflow-dags/dags/finalassignment/tolldata.tgz',
+    Bash_command = ('curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" ' 
+    '-o /Babayola/airflow-dags/dags/finalassignment/tolldata.tgz'
+),
     dag=dag,
 )
 
 # Defining unzip task
 unzip_data = BashOperator(task_id='unzip_data',
     bash_command = ('tar -xzf Babayola/airflow-dags/dags/finalassignment/tolldata.tgz 
-    '-C /Babayola/airflow-dags/dags/finalassignment/txt_data.txt,
+    '-C /Babayola/airflow-dags/dags/finalassignment/'
 ),
 dag=dag,
 )
@@ -50,7 +51,7 @@ dag=dag,
 
 # defining tsv data extract task
 extract_data_from_tsv = BashOperator(task_id = 'extract_data_from_tsv',
-bash_command = ("cut -d',' -f2,4-5 /Babayola/airflow-dags/dags/finalassignment/tollplaza-data.tsv >"
+bash_command = ("cut -f2,4-5 /Babayola/airflow-dags/dags/finalassignment/tollplaza-data.tsv >"
                                  "/Babayola/airflow-dags/dags/finalassignment/tsv_data.csv" 
 ),
 dag=dag,
@@ -74,7 +75,7 @@ consolidate_data = BashOperator(
     "paste -d ',' /Babayola/airflow-dags/dags/finalassignment/csv_data.csv"
                  "/Babayola/airflow-dags/dags/finalassignment/tsv_data.csv"
                  "/Babayola/airflow-dags/dags/finalassignment/fixed_width_data.csv >"
-                "/Babayola/airflow-dags/dags/finalassignment/extracted_data.csv
+                "/Babayola/airflow-dags/dags/finalassignment/extracted_data.csv"
     ),
     dag=dag,
 )

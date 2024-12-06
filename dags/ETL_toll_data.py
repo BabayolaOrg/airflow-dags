@@ -35,8 +35,8 @@ download = BashOperator (task_id = 'download',
 
 # Defining unzip task
 unzip_data = BashOperator(task_id='unzip_data',
-    bash_command = ('tar -xzf Babayola/airflow-dags/dags/finalassignment/tolldata.tgz' 
-    '-C /Babayola/airflow-dags/dags/finalassignment/'
+   bash_command = ('tar -xzf Babayola/airflow-dags/dags/finalassignment/tolldata.tgz '
+                '-C /Babayola/airflow-dags/dags/finalassignment/')
 ),
 dag=dag,
 )

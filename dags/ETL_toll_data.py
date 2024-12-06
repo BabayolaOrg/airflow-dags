@@ -1,27 +1,24 @@
 # import the libraries
-
 from datetime import timedelta
 from airflow.models import DAG
 from airflow.operators.bash_operator import BashOperator
 from airflow.utils.dates import days_ago
 
-#defining DAG arguments
 default_args = {
     'owner': 'Bouba_Ismaila',
     'start_date': days_ago(0),
     'email': ['bayolaismaila@gmail.com'],
     'retries': 1,
-    'retry_delay': timedelta(minutes=2),
-    'email on failure':true,
-    'email_on_retry' true,
+    'retry_delay': timedelta(minutes=5),
+    'email_on_failure': True,  # Fix syntax error: '=' -> ':'
+    'email_on_retry': True,    # Fix syntax error: '=' -> ':'
 }
 
-# defining the DAG
 dag = DAG(
-    'ETL_toll_data.py',
+    'ETL_toll_data',
     default_args=default_args,
     description='Apache Airflow Final Assignment',
-    schedule_interval=timedelta(minutes=5),
+    schedule_interval=timedelta(days=1),
 )
 
 # Defining the tasks
@@ -34,11 +31,13 @@ download = BashOperator (task_id = 'download',
 )
 
 # Defining unzip task
-unzip_data = BashOperator(task_id='unzip_data',
-   bash_command = ('tar -xzf Babayola/airflow-dags/dags/finalassignment/tolldata.tgz '
-                '-C /Babayola/airflow-dags/dags/finalassignment/')
-),
-dag=dag,
+unzip_data = BashOperator(
+    task_id='unzip_data',
+    bash_command=(
+        'tar -xzf Babayola/airflow-dags/dags/finalassignment/tolldata.tgz '
+        '-C /Babayola/airflow-dags/dags/finalassignment/'
+    ),
+    dag=dag,
 )
 
 # Defining csv data extract task

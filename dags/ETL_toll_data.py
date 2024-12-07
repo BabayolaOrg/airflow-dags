@@ -26,10 +26,10 @@ dag = DAG(
 # Defining download task
 download = BashOperator(
     task_id='download',
-    bash_command=(
-        'curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" '
-        '-o /Babayola/airflow-dags/dags/finalassignment/tolldata.tgz'
-    ),
+   bash_command = (
+    'curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" '
+    '-o ./dags/finalassignment/tolldata.tgz'
+),
     dag=dag,
 )
 

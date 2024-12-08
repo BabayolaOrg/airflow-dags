@@ -90,9 +90,9 @@ consolidate_data = BashOperator(
 transform_data = BashOperator(
     task_id='transform_data',
     bash_command=(
-        "mkdir -p /Babayola/airflow-dags/dags/finalassignment/staging && "  # Ensure 'staging' directory exists
+        "mkdir -p /Babayola/airflow-dags/dags/finalassignment && "  # Ensure the directory exists
         "cut -d',' -f4 /Babayola/airflow-dags/dags/finalassignment/extracted_data.csv | "  # Extract the 4th column
-        "tr '[a-z]' '[A-Z]' > /Babayola/airflow-dags/dags/finalassignment/staging/transformed_data.csv"
+        "tr '[a-z]' '[A-Z]' > /Babayola/airflow-dags/dags/finalassignment/transformed_data.csv"
     ),
     dag=dag,
 )                           

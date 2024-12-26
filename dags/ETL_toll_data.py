@@ -22,7 +22,7 @@ dag = DAG(
     description='Apache Airflow Final Assignment',
     schedule_interval=timedelta(days=1),
 )
-# Defining the tasks
+# Defining all the tasks
 # Defining download task
 download = BashOperator(
     task_id='download',

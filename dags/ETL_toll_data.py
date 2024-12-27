@@ -1,7 +1,6 @@
-# import the libraries
 from datetime import timedelta
 from airflow.models import DAG
-from airflow.operators.bash_operator import BashOperator
+from airflow.operators.bash import BashOperator
 from airflow.utils.dates import days_ago
 
 # Default arguments
@@ -11,8 +10,8 @@ default_args = {
     'email': ['bayolaismaila@gmail.com'],
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
-    'email_on_failure': True,  # Fixed syntax
-    'email_on_retry': True,    # Fixed syntax
+    'email_on_failure': True,
+    'email_on_retry': True,
 }
 
 # Define the DAG
@@ -22,81 +21,61 @@ dag = DAG(
     description='Apache Airflow Final Assignment',
     schedule_interval=timedelta(days=1),
 )
-# Defining all the tasks
-# Defining download task
+
+# Define file paths
+base_path = '/usr/local/airflow/dags/finalassignment'
+
+# Define tasks
 download = BashOperator(
     task_id='download',
-   bash_command = (
-    'curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" '
-    '-o ./dags/finalassignment/tolldata.tgz'
-),
+    bash_command=f'curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" -o {base_path}/tolldata.tgz',
     dag=dag,
 )
 
-# Defining unzip task
 unzip_data = BashOperator(
     task_id='unzip_data',
-    bash_command=(
-        'tar -xzf /Babayola/airflow-dags/dags/finalassignment/tolldata.tgz '
-        '-C /Babayola/airflow-dags/dags/finalassignment/'
-    ),
+    bash_command=f'tar -xzf {base_path}/tolldata.tgz -C {base_path}/',
     dag=dag,
 )
 
-# Defining csv data extract task
 extract_data_from_csv = BashOperator(
     task_id='extract_data_from_csv',
-    bash_command=(
-        "cut -d',' -f1-4 /Babayola/airflow-dags/dags/finalassignment/vehicle_data.csv > "
-        "/Babayola/airflow-dags/dags/finalassignment/csv_data.csv"
-    ),
+    bash_command=f"cut -d',' -f1-4 {base_path}/vehicle_data.csv > {base_path}/csv_data.csv",
     dag=dag,
 )
 
-# defining tsv data extract task
 extract_data_from_tsv = BashOperator(
     task_id='extract_data_from_tsv',
-    bash_command=(
-        "cut -f2,4-5 /Babayola/airflow-dags/dags/finalassignment/tollplaza-data.tsv > "
-        "/Babayola/airflow-dags/dags/finalassignment/tsv_data.csv"
-    ),
+    bash_command=f"cut -f2,4-5 {base_path}/tollplaza-data.tsv > {base_path}/tsv_data.csv",
     dag=dag,
 )
 
-# Defining extract fixed-width data task using awk
 extract_data_from_fixed_width = BashOperator(
     task_id='extract_data_from_fixed_width',
     bash_command=(
-        "echo 'Type of Payment code,Vehicle Code' > /Babayola/airflow-dags/dags/finalassignment/fixed_width_data.csv && "
-        "awk '{print substr($0, 44, 9), substr($0, 58, 5)}' /Babayola/airflow-dags/dags/finalassignment/payment-data.txt >> "
-        "/Babayola/airflow-dags/dags/finalassignment/fixed_width_data.csv"
+        f"echo 'Type of Payment code,Vehicle Code' > {base_path}/fixed_width_data.csv && "
+        f"awk '{{print substr($0, 44, 9), substr($0, 58, 5)}}' {base_path}/payment-data.txt >> "
+        f"{base_path}/fixed_width_data.csv"
     ),
     dag=dag,
 )
 
-# Defining consolidate data
 consolidate_data = BashOperator(
     task_id='consolidate_data',
     bash_command=(
-        "paste -d ',' /Babayola/airflow-dags/dags/finalassignment/csv_data.csv "
-        "/Babayola/airflow-dags/dags/finalassignment/tsv_data.csv "
-        "/Babayola/airflow-dags/dags/finalassignment/fixed_width_data.csv > "
-        "/Babayola/airflow-dags/dags/finalassignment/extracted_data.csv"
+        f"paste -d ',' {base_path}/csv_data.csv {base_path}/tsv_data.csv {base_path}/fixed_width_data.csv > "
+        f"{base_path}/extracted_data.csv"
     ),
     dag=dag,
 )
 
-#defining transform data task
 transform_data = BashOperator(
     task_id='transform_data',
     bash_command=(
-        "mkdir -p /Babayola/airflow-dags/dags/finalassignment && "  # Ensure the directory exists
-        "cut -d',' -f4 /Babayola/airflow-dags/dags/finalassignment/extracted_data.csv | "  # Extract the 4th column
-        "tr '[a-z]' '[A-Z]' > /Babayola/airflow-dags/dags/finalassignment/transformed_data.csv"
+        f"cut -d',' -f4 {base_path}/extracted_data.csv | tr '[a-z]' '[A-Z]' > {base_path}/transformed_data.csv"
     ),
     dag=dag,
-)                           
+)
 
-# task pipeline
-
+# Task pipeline
 download >> unzip_data >> extract_data_from_csv >> extract_data_from_tsv >> extract_data_from_fixed_width >> consolidate_data >> transform_data

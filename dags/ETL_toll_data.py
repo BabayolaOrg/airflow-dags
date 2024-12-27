@@ -32,7 +32,9 @@ download = BashOperator(
     "mkdir -p /usr/local/airflow/dags/finalassignment && "
     'wget "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" '
     "-O /usr/local/airflow/dags/finalassignment/tolldata.tgz"
-),
+    ),
+    dag=dag,
+)
 
 unzip_data = BashOperator(
     task_id='unzip_data',

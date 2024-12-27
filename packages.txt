@@ -1,2 +1,6 @@
 libpq-dev
 libssl-dev
+bash
+curl
+gawk
+coreutils

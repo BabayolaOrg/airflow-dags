@@ -28,13 +28,11 @@ base_path = '/usr/local/airflow/dags/finalassignment'
 # Define tasks
 download = BashOperator(
     task_id='download',
-    bash_command=(
-        "mkdir -p /usr/local/airflow/dags/finalassignment && "
-        'curl "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" '
-        "-o /usr/local/airflow/dags/finalassignment/tolldata.tgz"
-    ),
-    dag=dag,
-)
+   bash_command=(
+    "mkdir -p /usr/local/airflow/dags/finalassignment && "
+    'wget "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz" '
+    "-O /usr/local/airflow/dags/finalassignment/tolldata.tgz"
+),
 
 unzip_data = BashOperator(
     task_id='unzip_data',

@@ -7,7 +7,7 @@ from airflow.utils.dates import days_ago
 default_args = {
     'owner': 'Bouba_Ismaila',
     'start_date': days_ago(0),
-    'email': ['boubai@vut.ac.za'],
+    'email': ['bayolaismaila@gmail.com'],
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
     'email_on_failure': True,
@@ -29,8 +29,8 @@ base_path = '/usr/local/airflow/dags/finalassignment'
 download = BashOperator(
     task_id='download',
     bash_command=(
-    'curl -o /usr/local/airflow/dags/finalassignment/tolldata.tgz "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz"'
-    "-O /usr/local/airflow/dags/finalassignment/tolldata.tgz"
+    [ -d "/usr/local/airflow/dags/finalassignment" ] || mkdir -p /usr/local/airflow/dags/finalassignment
+    'curl -o /usr/local/airflow/dags/finalassignment/tolldata.tgz "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz"-O /usr/local/airflow/dags/finalassignment/tolldata.tgz '
     ),
     dag=dag,
 )

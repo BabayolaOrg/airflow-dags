@@ -29,8 +29,9 @@ base_path = '/usr/local/airflow/dags/finalassignment'
 download = BashOperator(
     task_id='download',
     bash_command=(
-    [ -d "/usr/local/airflow/dags/finalassignment" ] || mkdir -p /usr/local/airflow/dags/finalassignment
-    'curl -o /usr/local/airflow/dags/finalassignment/tolldata.tgz "https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz"-O /usr/local/airflow/dags/finalassignment/tolldata.tgz '
+        f'mkdir -p {base_path} && '
+        f'curl -o {base_path}/tolldata.tgz '
+        '"https://cf-courses-data.s3.us.cloud-object-storage.appdomain.cloud/IBM-DB0250EN-SkillsNetwork/labs/Final%20Assignment/tolldata.tgz"'
     ),
     dag=dag,
 )

@@ -46,7 +46,7 @@ download = BashOperator(
 
 unzip_data = BashOperator(
     task_id='unzip_data',
-    bash_command=f'tar -xzf {base_path}/tolldata.tgz -C {base_path}/',
+    bash_command=f'tar -xzvf {base_path}/tolldata.tgz -C {base_path}/',
     dag=dag,
 )
 

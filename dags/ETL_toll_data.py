@@ -25,6 +25,13 @@ dag = DAG(
 # Define file paths
 base_path = '/usr/local/airflow/dags/finalassignment'
 
+# Conflicting directory or file cleanup
+cleanup = BashOperator(
+    task_id='cleanup',
+    bash_command=f'rm -rf {base_path}',
+    dag=dag,
+)
+
 # Define tasks
 download = BashOperator(
     task_id='download',
@@ -83,4 +90,4 @@ transform_data = BashOperator(
 )
 
 # Task pipeline
-download >> unzip_data >> extract_data_from_csv >> extract_data_from_tsv >> extract_data_from_fixed_width >> consolidate_data >> transform_data
+cleanup >> download >> unzip_data >> extract_data_from_csv >> extract_data_from_tsv >> extract_data_from_fixed_width >> consolidate_data >> transform_data

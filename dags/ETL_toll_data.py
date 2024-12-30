@@ -54,7 +54,7 @@ unzip_data = BashOperator(
 
 # Python function to extract data from CSV
 def extract_data_from_csv_func():
-    df = pd.read_csv(f'{base_path}/vehicle_data.csv', usecols=[0, 1, 2, 3])  # Adjust columns as needed
+    df = pd.read_csv(f'{base_path}/vehicle-data.csv', usecols=[0, 1, 2, 3])  # Adjust columns as needed
     df.to_csv(f'{base_path}/csv_data.csv', index=False)
 
 extract_data_from_csv = PythonOperator(

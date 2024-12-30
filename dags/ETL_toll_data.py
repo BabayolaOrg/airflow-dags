@@ -12,8 +12,8 @@ default_args = {
     'email': ['bayolaismaila@gmail.com'],
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
-    'email_on_failure': True,
-    'email_on_retry': True,
+    'email_on_failure': False,
+    'email_on_retry': False,
 }
 
 # Define the DAG

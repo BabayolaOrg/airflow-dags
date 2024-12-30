@@ -25,7 +25,7 @@ dag = DAG(
 )
 
 # Define file paths
-base_path = '/usr/local/airflow/airflow-dags/finalassignment'
+base_path = '/usr/local/airflow/dags/finalassignment'
 
 # Conflicting directory or file cleanup
 cleanup = BashOperator(

@@ -1,7 +1,9 @@
 from datetime import timedelta
 from airflow.models import DAG
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from airflow.utils.dates import days_ago
+import pandas as pd
 
 # Default arguments
 default_args = {
@@ -50,28 +52,42 @@ unzip_data = BashOperator(
     dag=dag,
 )
 
-extract_data_from_csv = BashOperator(
+# Python function to extract data from CSV
+def extract_data_from_csv_func():
+    df = pd.read_csv(f'{base_path}/vehicle_data.csv', usecols=[0, 1, 2, 3])  # Adjust columns as needed
+    df.to_csv(f'{base_path}/csv_data.csv', index=False)
+
+extract_data_from_csv = PythonOperator(
     task_id='extract_data_from_csv',
-    bash_command=f"cut -d',' -f1-4 {base_path}/vehicle_data.csv > {base_path}/csv_data.csv",
+    python_callable=extract_data_from_csv_func,
     dag=dag,
 )
 
-extract_data_from_tsv = BashOperator(
+# Python function to extract data from TSV
+def extract_data_from_tsv_func():
+    df = pd.read_csv(f'{base_path}/tollplaza-data.tsv', sep='\t', usecols=[1, 3, 4])  # Adjust columns as needed
+    df.to_csv(f'{base_path}/tsv_data.csv', index=False)
+
+extract_data_from_tsv = PythonOperator(
     task_id='extract_data_from_tsv',
-    bash_command=f"cut -f2,4-5 {base_path}/tollplaza-data.tsv > {base_path}/tsv_data.csv",
+    python_callable=extract_data_from_tsv_func,
     dag=dag,
 )
 
-extract_data_from_fixed_width = BashOperator(
+# Python function to extract data from fixed-width file
+def extract_data_from_fixed_width_func():
+    # Fixed-width columns based on your provided substr positions
+    colspecs = [(43, 52), (57, 62)]  # Columns: (start, end) positions
+    df = pd.read_fwf(f'{base_path}/payment-data.txt', colspecs=colspecs, names=['Type of Payment code', 'Vehicle Code'])
+    df.to_csv(f'{base_path}/fixed_width_data.csv', index=False)
+
+extract_data_from_fixed_width = PythonOperator(
     task_id='extract_data_from_fixed_width',
-    bash_command=(
-        f"echo 'Type of Payment code,Vehicle Code' > {base_path}/fixed_width_data.csv && "
-        f"awk '{{print substr($0, 44, 9), substr($0, 58, 5)}}' {base_path}/payment-data.txt >> "
-        f"{base_path}/fixed_width_data.csv"
-    ),
+    python_callable=extract_data_from_fixed_width_func,
     dag=dag,
 )
 
+# Consolidate data from all sources
 consolidate_data = BashOperator(
     task_id='consolidate_data',
     bash_command=(
@@ -81,6 +97,7 @@ consolidate_data = BashOperator(
     dag=dag,
 )
 
+# Transform data (e.g., converting to uppercase)
 transform_data = BashOperator(
     task_id='transform_data',
     bash_command=(

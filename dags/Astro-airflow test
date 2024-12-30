@@ -1,0 +1,9 @@
+from airflow.operators.bash import BashOperator
+from airflow import DAG
+from datetime import datetime
+
+with DAG('test_file_access', start_date=datetime(2024, 12, 30), schedule_interval=None) as dag:
+    test_access = BashOperator(
+        task_id='list_files',
+        bash_command='ls -l /usr/local/airflow/dags/finalassignment/'
+    )

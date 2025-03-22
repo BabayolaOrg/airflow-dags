@@ -97,7 +97,7 @@ consolidate_data = BashOperator(
     dag=dag,
 )
 
-# Transforming the data
+# Transforming the data, capitalizing vehicle type
 transform_data = BashOperator(
     task_id='transform_data',
     bash_command=(

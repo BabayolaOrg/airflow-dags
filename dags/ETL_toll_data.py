@@ -16,7 +16,7 @@ default_args = {
     'email_on_retry': False,
 }
 
-# Define the DAG
+# Defining the DAG
 dag = DAG(
     'ETL_toll_data',
     default_args=default_args,
@@ -24,7 +24,7 @@ dag = DAG(
     schedule_interval=timedelta(days=1),
 )
 
-# Define file paths
+# Defining file paths
 base_path = '/usr/local/airflow/dags/finalassignment'
 
 # Conflicting directory or file cleanup
@@ -34,7 +34,7 @@ cleanup = BashOperator(
     dag=dag,
 )
 
-# Define tasks
+# Defining the tasks
 download = BashOperator(
     task_id='download',
     bash_command=(
@@ -54,7 +54,7 @@ unzip_data = BashOperator(
 
 # Python function to extract data from CSV
 def extract_data_from_csv_func():
-    df = pd.read_csv(f'{base_path}/vehicle-data.csv', usecols=[0, 1, 2, 3])  # Adjust columns as needed
+    df = pd.read_csv(f'{base_path}/vehicle-data.csv', usecols=[0, 1, 2, 3])
     df.to_csv(f'{base_path}/csv_data.csv', index=False)
 
 extract_data_from_csv = PythonOperator(
@@ -65,7 +65,7 @@ extract_data_from_csv = PythonOperator(
 
 # Python function to extract data from TSV
 def extract_data_from_tsv_func():
-    df = pd.read_csv(f'{base_path}/tollplaza-data.tsv', sep='\t', usecols=[1, 3, 4])  # Adjust columns as needed
+    df = pd.read_csv(f'{base_path}/tollplaza-data.tsv', sep='\t', usecols=[1, 3, 4])
     df.to_csv(f'{base_path}/tsv_data.csv', index=False)
 
 extract_data_from_tsv = PythonOperator(
@@ -87,7 +87,7 @@ extract_data_from_fixed_width = PythonOperator(
     dag=dag,
 )
 
-# Consolidate data from all sources
+# Consolidating data from all sources
 consolidate_data = BashOperator(
     task_id='consolidate_data',
     bash_command=(
@@ -97,7 +97,7 @@ consolidate_data = BashOperator(
     dag=dag,
 )
 
-# Transform data (e.g., converting to uppercase)
+# Transforming the data
 transform_data = BashOperator(
     task_id='transform_data',
     bash_command=(
